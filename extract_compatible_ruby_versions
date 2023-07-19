@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+
+require 'json'
+require 'rubygems'
+
+VERSIONS = [
+  '3.2',
+  '3.1',
+  '3.0',
+  '2.7',
+  '2.6',
+  '2.5',
+  '2.4',
+]
+
+filename = ARGV.first
+if filename && File.readable?(filename)
+  spec = Gem::Specification::load(filename)
+  requirement = spec.required_ruby_version
+  versions = VERSIONS.select { |version| requirement =~ Gem::Version.new(version) }
+
+  if ENV['GITHUB_ACTIONS'] == 'true'
+    github_output = ENV['GITHUB_OUTPUT'].nil? ? $stdout : File.open(ENV.fetch('GITHUB_OUTPUT', nil), 'a')
+    github_output.puts("ruby=#{versions.to_json}")
+  end
+  puts "Determined compatible Ruby versions from #{requirement}: #{versions.join(', ')}"
+else
+  $stderr.puts "#{$0} file.gemspec"
+  exit 1
+end

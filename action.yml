@@ -1,0 +1,20 @@
+---
+name: 'Derive Ruby versions'
+description: "Determine Ruby version testing matrix based on the gemspec's required_ruby_version field"
+inputs:
+  filename:
+    description: 'Gemspec filename'
+    required: false
+    default: '*.gemspec'
+outputs:
+  versions:
+    description: "Ruby versions"
+    value: ${{ steps.script.outputs.ruby }}
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v3
+    - id: script
+      # TODO spaces vs glob: compgen -G
+      run: ${{ github.action_path }}/extract_compatible_ruby_versions ${{ inputs.filename }}
+      shell: bash

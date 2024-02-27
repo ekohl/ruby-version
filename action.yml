@@ -13,7 +13,7 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - id: script
       # TODO spaces vs glob: compgen -G
       run: ${{ github.action_path }}/extract_compatible_ruby_versions ${{ inputs.filename }}

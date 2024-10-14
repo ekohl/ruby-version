@@ -6,6 +6,14 @@ inputs:
     description: 'Gemspec filename'
     required: false
     default: '*.gemspec'
+  repository:
+    description: 'Repository to checkout'
+    required: false
+    type: string
+  ref:
+    description: 'Git ref to checkout'
+    required: false
+    type: string
 outputs:
   versions:
     description: "Ruby versions"
@@ -14,6 +22,9 @@ runs:
   using: "composite"
   steps:
     - uses: actions/checkout@v4
+      with:
+        repository: ${{ inputs.repository }}
+        ref: ${{ inputs.ref }}
     - id: script
       # TODO spaces vs glob: compgen -G
       run: ${{ github.action_path }}/extract_compatible_ruby_versions ${{ inputs.filename }}
